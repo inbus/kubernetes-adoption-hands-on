@@ -18,7 +18,7 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-   name: svc-pod-3
+   name: svc-pod-2
    labels:
       version: "3.1.1"
       application: nginx
@@ -36,7 +36,7 @@ spec:
    * Service 2
      * Name: `svc-to-1`
      * 將流量只送往 `svc-pod-1`
-     * 客戶存取此 service 時要能夠用 `12345` 存取
+     * 客戶存取此 service 時要能夠用 port `12345` 存取
      
 ```yaml
 apiVersion: v1
@@ -46,9 +46,8 @@ metadata:
 spec:
   selector:
     app: nginx
-    version: "1"
   ports:
-    - port: 12345
+    - port: 80
       targetPort: 80
   type: ClusterIP
 ```
@@ -61,7 +60,9 @@ $ kubectl run --rm -it demo --image=curlimages/curl --restart=Never -- sh
 If you don't see a command prompt, try pressing enter.
 
 # 要能夠正確解析為 service 的 cluster IP
-/ $ nslookup <service-name>.<namespace>
+/ $ nslookup <service-name>
+/ $ nslookup <service-name>.<namespace> (部分環境這個指令會失效，跟 DNS search domain 有關)
+/ $ nslookup <service-name>.<namespace>.svc.cluster.local
 
 # 要能夠正確取得網頁內容
 / $ curl http://<service-name>.<namespace>
